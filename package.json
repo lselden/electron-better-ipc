@@ -44,5 +44,8 @@
 			"node",
 			"browser"
 		]
+	},
+	"dependencies": {
+		"serialize-error": "^3.0.0"
 	}
 }

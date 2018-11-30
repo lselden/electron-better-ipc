@@ -7,6 +7,10 @@ ipc.answerRenderer('test', async data => {
 	return 'test:main:answer';
 });
 
+ipc.answerRenderer('test-error', async () => {
+	throw new Error('unicorn');
+});
+
 function load(url) {
 	const win = new electron.BrowserWindow();
 	win.loadURL(url);
@@ -16,9 +20,14 @@ function load(url) {
 electron.app.on('ready', () => {
 	const win = load(`file://${__dirname}/index.html`);
 
-	win.webContents.on('did-finish-load', () => {
-		ipc.callRenderer(win, 'test', 'optional-data').then(answer => {
-			console.log('test:main:answer-from-renderer:', answer);
-		});
+	win.webContents.on('did-finish-load', async () => {
+		const answer = await ipc.callRenderer(win, 'test', 'optional-data');
+		console.log('test:main:answer-from-renderer:', answer);
+
+		try {
+			await ipc.callRenderer(win, 'test-error');
+		} catch (error) {
+			console.log('test:main:error-from-renderer:', error.name, error.message);
+		}
 	});
 });

@@ -24,7 +24,8 @@ test('main', async t => {
 	]);
 
 	const logs = [
-		...mainLogs,
+		// TODO: had to filter this to remove blank line at beginning
+		...mainLogs.filter(l => l),
 		// TODO: We have to clean the message because of:
 		// https://github.com/electron/spectron/issues/283
 		...rendererLogs.map(x => x.message.replace(/[^"]+/, ''))
@@ -36,7 +37,9 @@ test('main', async t => {
 		// https://github.com/electron/spectron/issues/282
 		'"test:renderer:answer-from-main:"',
 		'"test:renderer:data-from-main:"',
+		'"test:renderer:error-from-main: Error unicorn"',
 		'test:main:answer-from-renderer: test:renderer:answer-data',
-		'test:main:data-from-renderer: optional-data'
+		'test:main:data-from-renderer: optional-data',
+		'test:main:error-from-renderer: Error unicorn'
 	]);
 });
